@@ -1,0 +1,20 @@
+{
+    "name": "mlevent/url-builder",
+    "description": "PHP için basit URL oluşturma ve manipülasyon aracı",
+    "type": "library",
+    "authors": [
+        {
+            "name": "mlevent",
+            "email": "ghergedan@gmail.com"
+        }
+    ],
+    "require": {
+		"php": ">=5.5"
+	},
+	"autoload": {
+		"psr-4": {
+			"mlevent\\": "src"
+		}
+	},
+	"minimum-stability": "dev"
+}
