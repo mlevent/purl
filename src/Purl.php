@@ -21,6 +21,7 @@
         {
             $this->build = [
 
+                'base'     => NULL,
                 'path'     => NULL,
                 'params'   => [],
                 'deny'     => [],
@@ -64,6 +65,12 @@
                 }
             });
             return $this->params;
+        }
+
+        public function base($base = NULL)
+        {
+            $this->build['base'] = rtrim($base, '/');
+            return $this;
         }
 
         public function path($path)
@@ -138,14 +145,14 @@
                 }, $this->build['params']);
             }
 
-            $this->build['path']      = isset($this->build['path']) ? implode(array("/", $this->build['path'])) : $this->path;
+            $this->build['path']      = isset($this->build['path']) ? join(array("/", $this->build['path'])) : $this->path;
             $this->build['seperator'] = ($isParams ? "?" : "");
+
+            $this->build['base'] = isset($this->build['base']) ? $this->build['base'] : ($this->scheme.'://'.$this->host);
 
             $buildUrl = urldecode(implode(array(
 
-                $this->scheme,
-                '://',
-                $this->host,
+                $this->build['base'],
                 $this->build['path'],
                 $this->build['seperator'],
                 ($isParams ? http_build_query($joinParams) : NULL),

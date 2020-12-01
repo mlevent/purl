@@ -18,15 +18,74 @@ $ composer require mlevent/url-builder
 require __DIR__.'/vendor/autoload.php';
 
 $url = new \Mlevent\Purl();
+```
 
-$build = $url->path('store')
-             ->params([
-                'age'   => '32',
-                'color' => ['blue', 'red'],
-                'sort'  => 'desc'])
+## URL Oluşturma
+
+```php
+$build = $url->path('news')
+             ->params(['cat' => '11', 'tags' => ['sport', 'health'], 'sort' => 'desc'])
              ->build();
 ```
 
 ```
-/store?age=32&color=blue,red&sort=desc
+http(s)://site.com/news?cat=11&tags=sport,health&sort=desc
+```
+
+```php
+$build = $url->base('https://www.google.com')
+             ->path('search')
+             ->params(['q' => 'php'])
+             ->build();
+```
+
+```
+https://www.google.com/search?q=php
+```
+
+```php
+$build = $url->base(false)
+             ->path('search')
+             ->params(['q' => 'php'])
+             ->build();
+```
+
+```
+/search?q=php
+```
+
+## Manipülasyon
+
+```
+Tarayıcıdaki Örnek URL: http(s)://site.com/products/?colors=blue&sort=price&page=2
+```
+
+```php
+$push = $url->params(['colors' => ['red', 'black'], 'page' => 1])
+            ->deny('sort', 'page')
+            ->push();
+```
+
+```
+Tarayıcıdaki Örnek URL: http(s)://site.com/products/?gender=male&color=blue,red,black&page=1
+```
+
+```php
+$push = $url->allow('gender')->push();
+```
+
+```
+Çıktı: http(s)://site.com/products/?gender=male
+```
+
+```php
+$search = $url->searchValue('blue');
+```
+
+```php
+$isParam = $url->isParam('color');
+```
+
+```php
+$currentUrl = $url->current();
 ```
