@@ -56,7 +56,7 @@ $build = $url->base(false)
 
 ## Manipülasyon
 
-Tarayıcıdaki Örnek URL: http(s)://site.com/products/?colors=blue&sort=price&page=2
+Örnek URL = http(s)://site.com/products/?colors=blue&sort=price&page=2
 
 ```php
 $push = $url->params(['colors' => ['red', 'black'], 'page' => 1])
@@ -65,27 +65,21 @@ $push = $url->params(['colors' => ['red', 'black'], 'page' => 1])
 ```
 
 ```
-Çıktı: http(s)://site.com/products/?colors=blue,red,black&page=1
+http(s)://site.com/products/?colors=blue,red,black&page=1
 ```
 
-Tarayıcıdaki Örnek URL: http(s)://site.com/products/?gender=male&color=blue,red,black&page=1
+Örnek URL = http(s)://site.com/products/?gender=male&color=blue,red,black&page=1
 
 ```php
 $push = $url->allow('gender')->push();
 ```
 
 ```
-Çıktı: http(s)://site.com/products/?gender=male
+http(s)://site.com/products/?gender=male
 ```
 
 ```php
-$search = $url->searchValue('blue');
-```
-
-```php
-$isParam = $url->isParam('color');
-```
-
-```php
-$currentUrl = $url->current();
+$url->searchValue('blue');
+$url->isParam('color');
+$url->current();
 ```
