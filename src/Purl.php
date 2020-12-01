@@ -1,6 +1,6 @@
 <?php
 
-    namespace mlevent;
+    namespace Mlevent;
 
     class Purl
     {
