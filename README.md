@@ -87,3 +87,7 @@ echo $url->searchValue('blue'); // boolean
 echo $url->isParam('color'); // booelan
 echo $url->getCurrent(); // current url
 ```
+
+## Contributors
+
+- [mlevent](https://github.com/mlevent) Mert Levent - creator, maintainer

@@ -2,9 +2,10 @@
     "name": "mlevent/url-builder",
     "description": "PHP için basit URL oluşturma ve manipülasyon aracı",
     "type": "library",
+    "license": "MIT",
     "authors": [
         {
-            "name": "mlevent",
+            "name": "Mert Levent",
             "email": "ghergedan@gmail.com"
         }
     ],
