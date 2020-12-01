@@ -29,7 +29,7 @@ echo $url->path('news')
 ```
 
 ```
-https://site.com/news?q=latest&tags=sport,health&sort=desc
+http(s)://site.com/news?q=latest&tags=sport,health&sort=desc
 ```
 
 ```php
@@ -65,7 +65,7 @@ echo $url->params(['colors' => ['red', 'black'], 'page' => 1])
 ```
 
 ```
-http://site.com/products/?colors=blue,red,black&page=1
+https://site.com/products/?colors=blue,red,black&page=1
 ```
 
 Example URL = http://site.com/products/?gender=male&color=blue,red,black&page=1
