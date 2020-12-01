@@ -23,20 +23,20 @@ $url = new \Mlevent\Purl();
 ## URL Oluşturma
 
 ```php
-$build = $url->path('news')
-             ->params(['cat' => '11', 'tags' => ['sport', 'health'], 'sort' => 'desc'])
-             ->build();
+echo $url->path('news')
+         ->params(['q' => 'latest', 'tags' => ['sport', 'health'], 'sort' => 'desc'])
+         ->build();
 ```
 
 ```
-http(s)://site.com/news?cat=11&tags=sport,health&sort=desc
+http(s)://site.com/news?q=latest&tags=sport,health&sort=desc
 ```
 
 ```php
-$build = $url->base('https://www.google.com')
-             ->path('search')
-             ->params(['q' => 'php'])
-             ->build();
+echo $url->base('https://www.google.com')
+         ->path('search')
+         ->params(['q' => 'php'])
+         ->build();
 ```
 
 ```
@@ -44,10 +44,10 @@ https://www.google.com/search?q=php
 ```
 
 ```php
-$build = $url->base(false)
-             ->path('search')
-             ->params(['q' => 'php'])
-             ->build();
+echo $url->base(false)
+         ->path('search')
+         ->params(['q' => 'php'])
+         ->build();
 ```
 
 ```
@@ -56,30 +56,34 @@ $build = $url->base(false)
 
 ## Manipülasyon
 
-Örnek URL = http(s)://site.com/products/?colors=blue&sort=price&page=2
+Örnek URL = https://site.com/products/?colors=blue&sort=price&page=2
 
 ```php
-$push = $url->params(['colors' => ['red', 'black'], 'page' => 1])
-            ->deny('sort', 'page')
-            ->push();
+echo $url->params(['colors' => ['red', 'black'], 'page' => 1])
+         ->deny('sort', 'page')
+         ->push();
 ```
 
 ```
-http(s)://site.com/products/?colors=blue,red,black&page=1
+http://site.com/products/?colors=blue,red,black&page=1
 ```
 
-Örnek URL = http(s)://site.com/products/?gender=male&color=blue,red,black&page=1
-
-```php
-$push = $url->allow('gender')->push();
-```
-
-```
-http(s)://site.com/products/?gender=male
-```
+Örnek URL = http://site.com/products/?gender=male&color=blue,red,black&page=1
 
 ```php
-$url->searchValue('blue');
-$url->isParam('color');
-$url->current();
+echo $url->allow('gender', 'page')->push();
+```
+
+```
+http://site.com/products/?gender=male&page=1
+```
+
+```php
+echo $url->getParams('sort'); // string
+echo $url->getParams('sort', true); // array
+echo $url->getPath(); // ex./category/electronics/telephone
+echo $url->getPath(0); // category
+echo $url->searchValue('blue'); // boolean
+echo $url->isParam('color'); // booelan
+echo $url->getCurrent(); // current url
 ```

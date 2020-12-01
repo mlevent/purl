@@ -2,26 +2,32 @@
 
     require __DIR__.'/vendor/autoload.php';
 
-    use mlevent\purl;
+    $url = new \Mlevent\Purl();
 
-    $purl = new mlevent\purl();
+    echo $url->path('news')
+         ->params(['q' => 'latest', 'tags' => ['sport', 'health'], 'sort' => 'desc'])
+         ->build();
 
-    $push = $purl->params([
+    echo $url->base('https://www.google.com')
+            ->path('search')
+            ->params(['q' => 'php'])
+            ->build();
 
-        'filter' => ['15'],
-        'sort'   => 'desc',
-        'page'   => 1
+    echo $url->base(false)
+            ->path('search')
+            ->params(['q' => 'php'])
+            ->build();
 
-    ])->deny('page', 'filter')->push();
+    echo $url->params(['colors' => ['red', 'black'], 'page' => 1])
+            ->deny('sort', 'page')
+            ->push();
 
-    $build = $purl->path('contact')->params([
+    echo $url->allow('gender', 'page')->push();
 
-        'sort'   => 'desc',
-        'filter' => ['299', '123']
-
-    ])->build();
-
-    print_r($purl->searchValue('store'));
-    print_r($push);
-    print_r($build);
-    print_r($purl->current());
+    echo $url->getParams('sort'); // string
+    echo $url->getParams('sort', true); // array
+    echo $url->getPath(); // ex./category/electronics/telephone
+    echo $url->getPath(0); // category
+    echo $url->searchValue('blue'); // boolean
+    echo $url->isParam('color'); // booelan
+    echo $url->getCurrent(); // current url

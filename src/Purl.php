@@ -13,9 +13,9 @@
                $path,
                $query,
                $fragment,
-               $params,
+               $params = [],
                $splitChar = ',',
-               $build;
+               $build = [];
 
         public function initBuild()
         {
@@ -69,13 +69,14 @@
 
         public function base($base = NULL)
         {
-            $this->build['base'] = rtrim($base, '/');
+            $this->build['base'] = $base;
             return $this;
         }
 
         public function path($path)
         {
-            $this->build['path'] = ltrim($path, '/');
+            $path = str_replace(" ", "", $path);
+            $this->build['path'] = $path === '/' ? $path : join(['/', ltrim($path, '/')]);
             return $this;
         }
 
@@ -145,16 +146,14 @@
                 }, $this->build['params']);
             }
 
-            $this->build['path']      = isset($this->build['path']) ? join(array("/", $this->build['path'])) : $this->path;
-            $this->build['seperator'] = ($isParams ? "?" : "");
-
-            $this->build['base'] = isset($this->build['base']) ? $this->build['base'] : ($this->scheme.'://'.$this->host);
+            $this->build['path'] = $this->build['path'] ? $this->build['path'] : (!$this->build['base'] ? $this->path : NULL);
+            $this->build['base'] = $this->build['base'] ? $this->build['base'] : ($this->scheme.'://'.$this->host);
 
             $buildUrl = urldecode(implode(array(
 
                 $this->build['base'],
                 $this->build['path'],
-                $this->build['seperator'],
+                ($isParams ? "?" : ""),
                 ($isParams ? http_build_query($joinParams) : NULL),
                 $this->build['fragment']
             )));
@@ -162,6 +161,32 @@
             $this->initBuild();
 
             return $buildUrl;
+        }
+
+        public function getCurrent()
+        {
+            return $this->current;
+        }
+
+        public function getPath($index = NULL)
+        {
+            if(!is_null($index)){
+                
+                if($path = explode('/', trim($this->path, '/')))
+                    return isset($path[$index]) ? $path[$index] : false;
+                
+            } else
+                return $this->path;
+        }
+
+        public function getParams($index = NULL, $isArray = false)
+        {
+            if(!is_null($index)){
+                
+                return isset($this->params[$index]) ? ($isArray ? $this->params[$index] : implode($this->splitChar, $this->params[$index])) : false;
+                
+            } else
+                return $this->params;
         }
 
         public function isParam($param)
@@ -182,10 +207,5 @@
 
                 foreach($this->params as $item) if(in_array($search, $item)) return true;
             }
-        }
-
-        public function current()
-        {
-            return $this->current;
         }
     }
