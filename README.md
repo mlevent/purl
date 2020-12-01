@@ -17,7 +17,7 @@ $ composer require mlevent/url-builder
 ```php
 require __DIR__.'/vendor/autoload.php';
 
-$purl = new \Mlevent\Purl();
+$url = new \Mlevent\Purl();
 
 $build = $url->path('store')
              ->params([
