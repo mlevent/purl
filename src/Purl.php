@@ -67,13 +67,13 @@
             return $this->params;
         }
 
-        public function base($base = NULL)
+        public function base($base)
         {
-            $this->build['base'] = $base;
+            $this->build['base'] = !$base ? '/' : $base;
             return $this;
         }
 
-        public function path($path)
+        public function path(String $path)
         {
             $path = str_replace(" ", "", $path);
             $this->build['path'] = $path === '/' ? $path : join(['/', ltrim($path, '/')]);
@@ -146,8 +146,10 @@
                 }, $this->build['params']);
             }
 
-            $this->build['path'] = $this->build['path'] ? $this->build['path'] : (!$this->build['base'] ? $this->path : NULL);
-            $this->build['base'] = $this->build['base'] ? $this->build['base'] : ($this->scheme.'://'.$this->host);
+            $this->build['path'] = $this->build['path'] ? $this->build['path'] 
+                                                        : (!$this->build['base'] ? $this->path : NULL);
+            $this->build['base'] = $this->build['base'] ? ($this->build['base'] == '/' && $this->build['path']) ? NULL : $this->build['base']
+                                                        : ($this->scheme.'://'.$this->host);
 
             $buildUrl = urldecode(implode(array(
 

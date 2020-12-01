@@ -29,7 +29,7 @@ echo $url->path('news')
 ```
 
 ```
-http(s)://site.com/news?q=latest&tags=sport,health&sort=desc
+https://site.com/news?q=latest&tags=sport,health&sort=desc
 ```
 
 ```php
@@ -56,7 +56,7 @@ echo $url->base(false)
 
 ## Manipülasyon
 
-Örnek URL = https://site.com/products/?colors=blue&sort=price&page=2
+Example URL = https://site.com/products/?colors=blue&sort=price&page=2
 
 ```php
 echo $url->params(['colors' => ['red', 'black'], 'page' => 1])
@@ -68,7 +68,7 @@ echo $url->params(['colors' => ['red', 'black'], 'page' => 1])
 http://site.com/products/?colors=blue,red,black&page=1
 ```
 
-Örnek URL = http://site.com/products/?gender=male&color=blue,red,black&page=1
+Example URL = http://site.com/products/?gender=male&color=blue,red,black&page=1
 
 ```php
 echo $url->allow('gender', 'page')->push();
