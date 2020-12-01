@@ -13,7 +13,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"mlevent\\": "src"
+			"Mlevent\\": "src"
 		}
 	},
 	"minimum-stability": "dev"
