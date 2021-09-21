@@ -86,9 +86,9 @@ var_dump($url->getParams('sort', true)); // string
 var_dump($url->getAllowParams()); // array
 var_dump($url->getDenyParams()); // array
 var_dump($url->getPath()); // ex./category/electronics/telephone
-var_dump($url->getPath(0)); // category
-var_dump($url->isValue('black')); // boolean
-var_dump($url->isParam('colors')); // booelan
+var_dump($url->getPath(2)); // category
+var_dump($url->isValue('black')); // bool
+var_dump($url->isParam('colors')); // bool
 var_dump($url->getCurrent()); // current url
 ```
 
