@@ -1,4 +1,5 @@
 # url-builder
+
 PHP için basit URL oluşturma ve manipülasyon aracı
 
 [![Total Downloads](https://poser.pugx.org/mlevent/url-builder/d/total.svg)](https://packagist.org/packages/mlevent/url-builder)
@@ -79,15 +80,18 @@ http://site.com/products/?gender=male&page=1
 ```
 
 ```php
-echo $url->getParams('sort'); // string
-echo $url->getParams('sort', true); // array
-echo $url->getPath(); // ex./category/electronics/telephone
-echo $url->getPath(0); // category
-echo $url->searchValue('blue'); // boolean
-echo $url->isParam('color'); // booelan
-echo $url->getCurrent(); // current url
+var_dump($url->getParams()); // array
+var_dump($url->getParams('sort')); // array
+var_dump($url->getParams('sort', true)); // string
+var_dump($url->getAllowParams()); // array
+var_dump($url->getDenyParams()); // array
+var_dump($url->getPath()); // ex./category/electronics/telephone
+var_dump($url->getPath(0)); // category
+var_dump($url->isValue('black')); // boolean
+var_dump($url->isParam('colors')); // booelan
+var_dump($url->getCurrent()); // current url
 ```
 
 ## Contributors
 
-- [mlevent](https://github.com/mlevent) Mert Levent - creator, maintainer
+-   [mlevent](https://github.com/mlevent) Mert Levent - creator, maintainer
