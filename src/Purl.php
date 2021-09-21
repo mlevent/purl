@@ -16,11 +16,12 @@
                $params = [],
                $splitChar = ',',
                $build = [];
-
-        public function initBuild()
-        {
+        
+        /**
+         * initBuild
+         */
+        public function initBuild(){
             $this->build = [
-
                 'base'     => NULL,
                 'path'     => NULL,
                 'params'   => [],
@@ -28,9 +29,12 @@
                 'fragment' => NULL
             ];
         }
+        
+        /**
+         * __construct
+         */
+        public function __construct(){
 
-        public function __construct()
-        {
             $this->initBuild();
 
             $this->isSecure = getenv('HTTPS') && getenv('HTTPS') === 'on';
@@ -49,100 +53,117 @@
 
             if(isset($this->query)) $this->parseQuery($this->query);
         }
-
-        public function parseQuery(String $query)
-        {
+        
+        /**
+         * parseQuery
+         *
+         * @param mixed $query
+         */
+        public function parseQuery(String $query){
             parse_str($this->query, $this->params);
-
             array_walk($this->params, function(&$value, $key){
-                
-                if(!is_array($this->params[$key]))
-                {
+                if(!is_array($this->params[$key])){
                     $paramGroup = array_filter(explode($this->splitChar, $this->params[$key]), 'trim');
-
                     if(count($paramGroup)) 
                         $value = $paramGroup;
                 }
             });
             return $this->params;
         }
-
-        public function base($base)
-        {
+        
+        /**
+         * base
+         *
+         * @param mixed $base
+         */
+        public function base($base){
             $this->build['base'] = !$base ? '/' : $base;
             return $this;
         }
-
-        public function path(String $path)
-        {
+        
+        /**
+         * path
+         *
+         * @param mixed $path
+         */
+        public function path(String $path){
             $path = str_replace(" ", "", $path);
             $this->build['path'] = $path === '/' ? $path : join(['/', ltrim($path, '/')]);
             return $this;
         }
-
-        public function params($params)
-        {
+        
+        /**
+         * params
+         *
+         * @param mixed $params
+         */
+        public function params($params){
             if(is_array($params)){
-
                 array_walk($params, function(&$item, $key){
-
                     if(!is_array($item)) $item = (array)$item;
                 });
-
                 $this->build['params'] = $params;
             }
             return $this;
         }
-
-        public function fragment($fragment)
-        {
+        
+        /**
+         * fragment
+         *
+         * @param mixed $fragment
+         */
+        public function fragment($fragment){
             $this->build['fragment'] = trim($fragment);
             return $this;
         }
-
-        public function allow()
-        {
-            $this->build['deny'] = array_keys(array_diff_key($this->params, array_flip(func_get_args())));
+        
+        /**
+         * allow
+         */
+        public function allow(){
+            $this->build['deny']  = array_keys(array_diff_key($this->params, array_flip(func_get_args())));
             return $this;
         }
-
-        public function deny()
-        {
-            $this->build['deny'] = array_keys(array_flip(func_get_args()));
+        
+        /**
+         * deny
+         */
+        public function deny(){
+            $this->build['deny']  = array_keys(array_flip(func_get_args()));
             return $this;
         }
+        
+        /**
+         * push
+         */
+        public function push(){
+            if(isset($this->build['params']) && isset($this->params)){
 
-        public function push()
-        {
-            if(isset($this->build['params']) && isset($this->params))
-            {
                 $getParams = $this->params;
                 
                 array_walk($getParams, function($item, $key) use(&$getParams){
-                    
                     if(in_array($key, $this->build['deny'])) unset($getParams[$key]);
                 });
 
                 $this->build['params'] = array_merge_recursive($getParams, $this->build['params']);
 
                 array_walk($this->build['params'], function(&$item){
-                    
                     $item = array_unique($item);
                 });
             }
             return $this->build();
         }
+        
+        /**
+         * build
+         */
+        public function build(){
 
-        public function build()
-        {
             $isParams = count($this->build['params']);
 
-            if($isParams)
-            {
+            if($isParams){
                 $joinParams = array_map(function(&$item){
-                
                     return implode($this->splitChar, $item);
-    
                 }, $this->build['params']);
             }
 
@@ -152,7 +173,6 @@
                                                         : ($this->scheme.'://'.$this->host);
 
             $buildUrl = urldecode(implode(array(
-
                 $this->build['base'],
                 $this->build['path'],
                 ($isParams ? "?" : ""),
@@ -161,53 +181,82 @@
             )));
 
             $this->initBuild();
-
+            
             return $buildUrl;
         }
-
-        public function getCurrent()
-        {
+        
+        /**
+         * getCurrent
+         */
+        public function getCurrent(){
             return $this->current;
         }
-
-        public function getPath($index = NULL)
-        {
+        
+        /**
+         * getPath
+         *
+         * @param mixed $index
+         */
+        public function getPath($index = NULL){
             if(!is_null($index)){
-                
                 if($path = explode('/', trim($this->path, '/')))
                     return isset($path[$index]) ? $path[$index] : false;
-                
-            } else
+            } else{
                 return $this->path;
+            }
         }
-
-        public function getParams($index = NULL, $isArray = false)
-        {
+        
+        /**
+         * getParams
+         *
+         * @param mixed $index
+         * @param mixed $isArray
+         */
+        public function getParams($index = NULL, $isArray = false){
             if(!is_null($index)){
-                
                 return isset($this->params[$index]) ? ($isArray ? $this->params[$index] : implode($this->splitChar, $this->params[$index])) : false;
-                
-            } else
+            } else{
                 return $this->params;
+            }
         }
-
-        public function isParam($param)
-        {
+        
+        /**
+         * getAllowParams
+         */
+        public function getAllowParams(){
+            return array_keys(array_diff_key($this->params, array_flip($this->build['deny'])));
+        }
+        
+        /**
+         * getDenyParams
+         */
+        public function getDenyParams(){
+            return array_keys(array_intersect_key($this->params, array_flip($this->build['deny'])));
+        }
+        
+        /**
+         * isParam
+         *
+         * @param mixed $param
+         */
+        public function isParam($param){
             return isset($this->params[$param]);
         }
-
-        public function searchValue($search, $param = NULL)
-        {
+        
+        /**
+         * isValue
+         *
+         * @param mixed $search
+         * @param mixed $param
+         */
+        public function isValue($search, $param = NULL){
             if(!isset($search) || !isset($this->params)) return false;
-
-            if(!empty($param))
-            {
+            if(!empty($param)){
                 if(isset($this->params[$param]))
                     return in_array($search, $this->params[$param]);
-            
             } else{
-
                 foreach($this->params as $item) if(in_array($search, $item)) return true;
             }
+            return false;
         }
     }

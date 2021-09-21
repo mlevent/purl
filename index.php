@@ -24,10 +24,13 @@
 
     echo $url->allow('gender', 'page')->push();
 
-    echo $url->getParams('sort'); // string
-    echo $url->getParams('sort', true); // array
-    echo $url->getPath(); // ex./category/electronics/telephone
-    echo $url->getPath(0); // category
-    echo $url->searchValue('blue'); // boolean
-    echo $url->isParam('color'); // booelan
-    echo $url->getCurrent(); // current url
+    var_dump($url->getParams()); // array
+    var_dump($url->getParams('sort')); // array
+    var_dump($url->getParams('sort', true)); // string
+    var_dump($url->getAllowParams()); // array
+    var_dump($url->getDenyParams()); // array
+    var_dump($url->getPath()); // ex./category/electronics/telephone
+    var_dump($url->getPath(0)); // category
+    var_dump($url->isValue('black')); // boolean
+    var_dump($url->isParam('colors')); // booelan
+    var_dump($url->getCurrent()); // current url
