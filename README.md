@@ -1,16 +1,21 @@
-# url-builder
+<h1 align="center">🧾 Purl</h1>
+<p align="center">PHP için basit URL oluşturma ve manipülasyon aracı.</p>
 
-PHP için basit URL oluşturma ve manipülasyon aracı
-
-[![Total Downloads](https://poser.pugx.org/mlevent/url-builder/d/total.svg)](https://packagist.org/packages/mlevent/url-builder)
-[![Latest Stable Version](https://poser.pugx.org/mlevent/url-builder/v/stable.svg)](https://packagist.org/packages/mlevent/url-builder)
-[![Latest Unstable Version](https://poser.pugx.org/mlevent/url-builder/v/unstable.svg)](https://packagist.org/packages/mlevent/url-builder)
-[![License](https://poser.pugx.org/mlevent/url-builder/license.svg)](https://packagist.org/packages/mlevent/url-builder)
+<p align="center">
+<img src="https://img.shields.io/packagist/v/mlevent/purl?style=plastic"/>
+<img src="https://img.shields.io/github/license/mlevent/purl?style=plastic"/>
+<img src="https://img.shields.io/github/issues/mlevent/purl?style=plastic"/>
+<img src="https://img.shields.io/github/last-commit/mlevent/purl?style=plastic"/>
+<img src="https://img.shields.io/github/stars/mlevent/purl?style=plastic"/>
+<img src="https://img.shields.io/github/forks/mlevent/purl?style=plastic"/>
+</p>
 
 ## Kurulum
 
-```
-$ composer require mlevent/url-builder
+🛠️ Paketi composer ile projenize dahil edin;
+
+```bash
+composer mlevent/purl
 ```
 
 ## Örnek Kullanım
