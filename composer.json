@@ -1,6 +1,6 @@
 {
-    "name": "mlevent/url-builder",
-    "description": "PHP için basit URL oluşturma ve manipülasyon aracı",
+    "name": "mlevent/purl",
+    "description": "PHP için URL oluşturma ve manipülasyon aracı",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -10,12 +10,12 @@
         }
     ],
     "require": {
-		"php": ">=5.5"
-	},
-	"autoload": {
-		"psr-4": {
-			"Mlevent\\": "src"
-		}
-	},
-	"minimum-stability": "dev"
+        "php": ">=5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mlevent\\Uri\\": "src"
+        }
+    },
+    "minimum-stability": "dev"
 }

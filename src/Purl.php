@@ -1,6 +1,6 @@
 <?php
 
-namespace Mlevent;
+namespace Mlevent\Uri;
 
 class Purl
 {
