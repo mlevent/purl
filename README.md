@@ -15,7 +15,7 @@
 🛠️ Paketi composer ile projenize dahil edin;
 
 ```bash
-composer mlevent/purl
+composer require mlevent/purl
 ```
 
 ## Örnek Kullanım
