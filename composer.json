@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Mlevent\\Uri\\": "src"
+            "Mlevent\\": "src"
         }
     },
     "minimum-stability": "dev"
