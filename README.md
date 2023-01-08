@@ -21,7 +21,7 @@ composer require mlevent/purl
 ## URL Oluşturma
 
 ```php
-use Mlevent\Uri\Purl;
+use Mlevent\Purl;
 
 $url = new Purl;
 
