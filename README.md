@@ -1,5 +1,5 @@
 <h1 align="center">🧾 Purl</h1>
-<p align="center">PHP için basit URL oluşturma ve manipülasyon aracı.</p>
+<p align="center">PHP için URL oluşturma ve manipülasyon aracı.</p>
 
 <p align="center">
 <img src="https://img.shields.io/packagist/v/mlevent/purl?style=plastic"/>
@@ -21,7 +21,7 @@ composer require mlevent/purl
 ## URL Oluşturma
 
 ```php
-use Mlevent\Purl;
+use Mlevent\Uri\Purl;
 
 $url = new Purl;
 
