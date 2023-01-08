@@ -12,13 +12,13 @@ class Purl
     protected ?int    $port       = null;
     protected ?string $query      = null;
     protected string  $splitChar  = ',';
-    protected array   $params     = [];
-    protected ?string $base       = null;
+    protected array   $args       = [];
+    protected ?string $baseUrl    = null;
     protected ?string $path       = null;
     protected ?string $fragment   = null;
     protected array   $allowed    = [];
     protected array   $denied     = [];
-    protected array   $userParams = [];
+    protected array   $userArgs   = [];
     
     /**
      * __construct
@@ -28,7 +28,7 @@ class Purl
         $this->isSecure = getenv('HTTPS') && getenv('HTTPS') === 'on';
         $this->host     = getenv('HTTP_HOST');
         $this->request  = getenv('REQUEST_URI');
-        $this->current  = $this->getCurrent();
+        $this->current  = $this->getCurrentUrl();
 
         foreach (parse_url($this->current) as $parseKey => $parseValue) {
             $this->{$parseKey} = $parseValue 
@@ -42,11 +42,11 @@ class Purl
     }
 
     /**
-     * getCurrent
+     * getCurrentUrl
      *
      * @return string
      */
-    public function getCurrent()
+    public function getCurrentUrl()
     {
         return join('', [($this->isSecure ? 'https' : 'http'), '://', $this->host, $this->request]);
     }
@@ -59,28 +59,28 @@ class Purl
      */
     protected function parseQuery(string $query)
     {
-        parse_str($this->query, $this->params);
+        parse_str($this->query, $this->args);
         
-        array_walk($this->params, function (&$value, $key) {
-            if (!is_array($this->params[$key])) {
-                $paramGroup = array_filter(explode($this->splitChar, $this->params[$key]), 'trim');
-                if (count($paramGroup)) {
-                    $value = $paramGroup;
+        array_walk($this->args, function (&$value, $key) {
+            if (!is_array($this->args[$key])) {
+                $argGroup = array_filter(explode($this->splitChar, $this->args[$key]), 'trim');
+                if (count($argGroup)) {
+                    $value = $argGroup;
                 }
             }
         });
-        return $this->params;
+        return $this->args;
     }
     
     /**
-     * base
+     * baseUrl
      *
-     * @param  string $base
-     * @return string
+     * @param  string $baseUrl
+     * @return self
      */
-    public function base(string $base)
+    public function baseUrl(string $baseUrl)
     {
-        $this->base = !$base ? '/' : $base;
+        $this->baseUrl = !$baseUrl ? '/' : $baseUrl;
         return $this;
     }
     
@@ -93,25 +93,25 @@ class Purl
     {
         $this->path = $path !== '/' 
             ? join(['/', ltrim($path, '/')])
-            : $path ;
+            : $path;
 
         return $this;
     }
     
     /**
-     * params
+     * args
      *
-     * @param mixed $params
+     * @param mixed $args
      */
-    public function params($params)
+    public function args(array $args)
     {
-        if (is_array($params)) {
-            array_walk($params, function (&$item, $key) {
+        if (is_array($args)) {
+            array_walk($args, function (&$item, $key) {
                 if (!is_array($item)) {
                     $item = (array) $item;
                 }
             });
-            $this->userParams = $params;
+            $this->userArgs = $args;
         }
         return $this;
     }
@@ -135,7 +135,7 @@ class Purl
      */
     public function allow()
     {
-        $this->denied = array_keys(array_diff_key($this->params, array_flip(func_get_args())));
+        $this->denied = array_keys(array_diff_key($this->args, array_flip(func_get_args())));
         return $this;
     }
     
@@ -157,19 +157,19 @@ class Purl
      */
     public function push()
     {
-        if (isset($this->userParams) && isset($this->params)) {
+        if (isset($this->userArgs) && isset($this->args)) {
 
-            $params = $this->params;
+            $args = $this->args;
             
-            array_walk($params, function ($item, $key) use (&$params) {
+            array_walk($args, function ($item, $key) use (&$args) {
                 if (in_array($key, $this->denied)) {
-                    unset($params[$key]);
+                    unset($args[$key]);
                 }
             });
 
-            $this->userParams = array_merge_recursive($params, $this->userParams);
+            $this->userArgs = array_merge_recursive($args, $this->userArgs);
 
-            array_walk($this->userParams, function (&$item) {
+            array_walk($this->userArgs, function (&$item) {
                 $item = array_unique($item);
             });
         }
@@ -183,25 +183,25 @@ class Purl
      */
     public function build()
     {
-        if (sizeof($this->userParams)) {
-            $joinParams = array_map(function (&$item) {
+        if (sizeof($this->userArgs)) {
+            $joinArgs = array_map(function (&$item) {
                 return implode($this->splitChar, $item);
-            }, $this->userParams);
+            }, $this->userArgs);
         }
 
         $this->path = !$this->path 
-            ? (!$this->base ? $this->path : null) 
+            ? (!$this->baseUrl ? $this->path : null) 
             : $this->path;
         
-        $this->base = !$this->base 
+        $this->baseUrl = !$this->baseUrl 
             ? ($this->scheme.'://'.$this->host) 
-            : (($this->base == '/' && $this->path) ? null : $this->base);
+            : (($this->baseUrl == '/' && $this->path) ? null : $this->baseUrl);
 
         $buildUrl = urldecode(implode(array(
-            $this->base,
+            $this->baseUrl,
             $this->path,
-            (sizeof($this->userParams) ? '?' : null),
-            (sizeof($this->userParams) ? http_build_query($joinParams) : null),
+            (sizeof($this->userArgs) ? '?' : null),
+            (sizeof($this->userArgs) ? http_build_query($joinArgs) : null),
             $this->fragment
         )));
 
@@ -217,12 +217,12 @@ class Purl
      */
     public function initBuild() 
     {
-        $this->base       = null;
+        $this->baseUrl    = null;
         $this->path       = null;
         $this->fragment   = null;
         $this->allowed    = [];
         $this->denied     = [];
-        $this->userParams = [];
+        $this->userArgs = [];
     }
 
     /**
@@ -242,71 +242,71 @@ class Purl
     }
     
     /**
-     * getParams
+     * getArgs
      *
      * @param  integer|null $index
      * @param  boolean      $isArray
      * @return void
      */
-    public function getParams(int $index = null, bool $isArray = false)
+    public function getArgs(int $index = null, bool $isArray = false)
     {
         if (!is_null($index)) {
-            return isset($this->params[$index]) 
-                ? ($isArray ? $this->params[$index] : implode($this->splitChar, $this->params[$index])) 
+            return isset($this->args[$index]) 
+                ? ($isArray ? $this->args[$index] : implode($this->splitChar, $this->args[$index])) 
                 : null;
         }
-        return $this->params;
+        return $this->args;
     }
     
     /**
-     * getAllowedParams
+     * getAllowedArgs
      *
      * @return array
      */
-    public function getAllowedParams()
+    public function getAllowedArgs()
     {
-        return array_keys(array_diff_key($this->params, array_flip($this->denied)));
+        return array_keys(array_diff_key($this->args, array_flip($this->denied)));
     }
     
     /**
-     * getDeniedParams
+     * getDeniedArgs
      *
      * @return array
      */
-    public function getDeniedParams()
+    public function getDeniedArgs()
     {
-        return array_keys(array_intersect_key($this->params, array_flip($this->denied)));
+        return array_keys(array_intersect_key($this->args, array_flip($this->denied)));
     }
     
     /**
-     * hasParam
+     * hasArg
      *
-     * @param  string  $param
+     * @param  string  $arg
      * @return boolean
      */
-    public function hasParam(string $param)
+    public function hasArg(string $arg)
     {
-        return isset($this->params[$param]);
+        return isset($this->args[$arg]);
     }
     
     /**
      * hasValue
      *
      * @param  string      $search
-     * @param  string|null $param
+     * @param  string|null $arg
      * @return boolean
      */
-    public function hasValue(string $search, string $param = null)
+    public function hasValue(string $search, string $arg = null)
     {
-        if (!isset($search) || !isset($this->params)) {
+        if (!isset($search) || !isset($this->args)) {
             return false;
         }
-        if (!empty($param)) {
-            if (isset($this->params[$param])) {
-                return in_array($search, $this->params[$param]);
+        if (!empty($arg)) {
+            if (isset($this->args[$arg])) {
+                return in_array($search, $this->args[$arg]);
             }
         } else {
-            foreach ($this->params as $item) {
+            foreach ($this->args as $item) {
                 if(in_array($search, $item)) { 
                     return true;
                 }
