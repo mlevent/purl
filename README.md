@@ -92,19 +92,10 @@ echo $url->allow('colors', 'sizes')
 
 ```php
 /**
+ * @param  nullable|string $arg
  * @return array
  */
-$url->getArgs();
-
-/**
- * @return array
- */
-$url->getArgs('colors');
-
-/**
- * @return string
- */
-$url->getArgs('colors', true);
+$url->getArgs($arg);
 
 /**
  * @return array
